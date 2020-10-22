@@ -16,11 +16,11 @@ fn main() {
     loop {
         // parse presence.json
         let data = json::parse(
-            std::fs::read_to_string("presence.json")
-                .expect("unable to read presence.json")
+            std::fs::read_to_string("data/presence.json")
+                .expect("error: 'data/presence.json' doesn't exist!")
                 .as_str(),
         )
-        .expect("unable to parse presence.json");
+        .expect("error: failed to parse 'data/presence.json'!");
 
         // sanity check for status_index
         if status_index >= data["statuses"].len() {
@@ -32,7 +32,7 @@ fn main() {
             .patch("https://discordapp.com/api/v6/users/@me/settings")
             .header(
                 reqwest::header::AUTHORIZATION,
-                std::env::var("TOKEN").expect("please specify 'TOKEN' environment variable!"),
+                std::env::var("TOKEN").expect("error: 'TOKEN' environment variable not specified!"),
             )
             .header(reqwest::header::CONTENT_TYPE, "application/json")
             .body(json::stringify(json::object! {
@@ -45,7 +45,7 @@ fn main() {
             }));
 
         // send request
-        request.send().expect("unable to send request");
+        request.send().expect("error: unable to send request!");
 
         // sleep for 15 secs and increment status_index
         thread::sleep(time::Duration::from_secs(15));
@@ -61,7 +61,7 @@ fn command_line() {
         let mut input = String::new();
         std::io::stdin()
             .read_line(&mut input)
-            .expect("failed to read line");
+            .expect("error: failed to read line!");
 
         if input.starts_with("exit") {
             std::process::exit(0);
