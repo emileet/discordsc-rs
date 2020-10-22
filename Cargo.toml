@@ -1,5 +1,5 @@
 [package]
-name = "discordsc-rs"
+name = "discordsc"
 version = "0.1.0"
 authors = ["Emily Maré (emileet) <emileet@plsnobully.me>"]
 edition = "2018"
