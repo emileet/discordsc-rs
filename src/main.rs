@@ -1,15 +1,9 @@
 use dotenv::dotenv;
-use std::io::prelude::*;
 use std::{thread, time};
 
 fn main() {
     // load .env
     dotenv().ok();
-
-    // handle graceful exits
-    thread::spawn(|| {
-        command_line();
-    });
 
     // main logic
     let mut status_index: usize = 0;
@@ -50,21 +44,5 @@ fn main() {
         // sleep for 15 secs and increment status_index
         thread::sleep(time::Duration::from_secs(15));
         status_index += 1;
-    }
-}
-
-fn command_line() {
-    loop {
-        print!("> ");
-        std::io::stdout().flush().unwrap();
-
-        let mut input = String::new();
-        std::io::stdin()
-            .read_line(&mut input)
-            .expect("error: failed to read line!");
-
-        if input.starts_with("exit") {
-            std::process::exit(0);
-        }
     }
 }
