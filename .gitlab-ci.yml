@@ -1,0 +1,26 @@
+stages:
+  - build
+  - container
+
+build:
+  image: rust:latest
+  stage: build
+  script:
+    - cargo build --release
+  artifacts:
+    paths:
+      - ./target/release/discordsc
+
+container:
+  image: docker:latest
+  stage: container
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - cp ./data/example.json ./data/presence.json
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master

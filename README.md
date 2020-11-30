@@ -1,4 +1,5 @@
 # discordsc-rs
+[![pipeline status](https://git.plsnobully.me/emileet/discordsc-rs/badges/master/pipeline.svg)](https://git.plsnobully.me/emileet/discordsc-rs/-/commits/master)
 
 discord status changer - a simple rust app to automatically cycle through predefined custom statuses
 
