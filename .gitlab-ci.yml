@@ -1,28 +1,71 @@
 stages:
-  - build
-  - container
+    - build
+    - release
+    - container
 
-build:
-  image: rust:latest
-  stage: build
-  script:
-    - cargo build --release
-  artifacts:
-    paths:
-      - ./target/release/discordsc
+build linux:
+    image: rust:latest
+    stage: build
+    script:
+        - cargo build --release
+    artifacts:
+        paths:
+            - ./target/release/discordsc
+
+build windows:
+    image: rust:latest
+    stage: build
+    before_script:
+        - apt update
+        - apt install gcc-mingw-w64 -y
+        - rustup target add x86_64-pc-windows-gnu
+    script:
+        - cargo build --release --target x86_64-pc-windows-gnu
+    artifacts:
+        paths:
+            - ./target/x86_64-pc-windows-gnu/release/discordsc.exe
+
+release linux:
+    image: rust:latest
+    stage: release
+    script:
+        - mkdir -p release/data
+        - cp data/example.json release/data/config.json
+        - cp target/release/discordsc release
+        - cd release
+        - tar -czvf ../discordsc-rs-linux64.tar.gz ./
+    artifacts:
+        paths:
+            - ./discordsc-rs-linux64.tar.gz
+
+release windows:
+    image: rust:latest
+    stage: release
+    before_script:
+        - apt update
+        - apt install zip -y
+    script:
+        - mkdir -p release/data
+        - cp data/example.json release/data/config.json
+        - cp target/x86_64-pc-windows-gnu/release/discordsc.exe release
+        - cd release
+        - zip -r ../discordsc-rs-win64.zip ./
+    artifacts:
+        paths:
+            - ./discordsc-rs-win64.zip
 
 container:
-  image: docker:latest
-  stage: container
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - cp ./data/example.json ./data/presence.json
-    - cp ./target/release/discordsc .
-    - cp ./build/Dockerfile .
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
-  only:
-    - master
+    image: docker:latest
+    stage: container
+    services:
+        - docker:dind
+    before_script:
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+        - cp ./data/example.json ./data/config.json
+        - cp ./target/release/discordsc .
+        - cp ./build/Dockerfile .
+    script:
+        - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+        - docker push "$CI_REGISTRY_IMAGE"
+    only:
+        - master

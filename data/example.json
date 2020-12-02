@@ -1,16 +1,16 @@
 {
+    "token": "mfa.emi1337",
+    "delay": 15,
     "statuses": [
-        "emiyeet",
-        "arch btw"
-    ],
-    "emojis": [
         {
+            "text": "emiyeet",
             "emoji_id": "670569765034655774",
-            "emoji_name": "purple-heart"
+            "emoji_name": "purpleheart"
         },
         {
+            "text": "arch btw",
             "emoji_id": "670569765034655774",
-            "emoji_name": "purple-heart"
+            "emoji_name": "purpleheart"
         }
     ]
 }

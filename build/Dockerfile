@@ -7,7 +7,7 @@ RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/
 
 WORKDIR /app
 
-COPY data/presence.json /app/data/
+COPY data/config.json /app/data/
 COPY discordsc /app/run
 
 ENV LD_LIBRARY_PATH=/lib:/usr/lib:$LD_LIBRARY_PATH
