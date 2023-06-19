@@ -5,6 +5,19 @@ stages:
     - build
     - release
 
+build container:
+    image: messense/rust-musl-cross:x86_64-musl
+    stage: build
+    before_script:
+        - apt update
+        - apt install musl-tools -y
+        - rustup target add x86_64-unknown-linux-musl
+    script:
+        - cargo build --release --target x86_64-unknown-linux-musl
+    artifacts:
+        paths:
+            - ./target/x86_64-unknown-linux-musl/release/discordsc
+
 build linux:
     image: rust:latest
     stage: build
@@ -27,18 +40,19 @@ build windows:
         paths:
             - ./target/x86_64-pc-windows-gnu/release/discordsc.exe
 
-build container:
-    image: messense/rust-musl-cross:x86_64-musl
-    stage: build
+release container:
+    image: quay.io/buildah/stable:latest
+    stage: release
     before_script:
-        - apt update
-        - apt install musl-tools -y
-        - rustup target add x86_64-unknown-linux-musl
+        - buildah login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+        - cp ./target/x86_64-unknown-linux-musl/release/discordsc .
+        - cp ./data/example.json ./data/config.json
+        - cp ./build/Dockerfile .
     script:
-        - cargo build --release --target x86_64-unknown-linux-musl
-    artifacts:
-        paths:
-            - ./target/x86_64-unknown-linux-musl/release/discordsc
+        - buildah bud --pull -t "$CI_REGISTRY_IMAGE" .
+        - buildah push "$CI_REGISTRY_IMAGE"
+    only:
+        - master
 
 release linux:
     image: rust:latest
@@ -68,17 +82,3 @@ release windows:
     artifacts:
         paths:
             - ./discordsc-rs-win64.zip
-
-release container:
-    image: quay.io/buildah/stable:latest
-    stage: release
-    before_script:
-        - buildah login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-        - cp ./target/x86_64-unknown-linux-musl/release/discordsc .
-        - cp ./data/example.json ./data/config.json
-        - cp ./build/Dockerfile .
-    script:
-        - buildah bud --pull -t "$CI_REGISTRY_IMAGE" .
-        - buildah push "$CI_REGISTRY_IMAGE"
-    only:
-        - master
