@@ -1,16 +1,17 @@
 {
-    "token": "mfa.emi1337",
-    "delay": 15,
-    "statuses": [
-        {
-            "text": "emiyeet",
-            "emoji_id": "670569765034655774",
-            "emoji_name": "purpleheart"
-        },
-        {
-            "text": "arch btw",
-            "emoji_id": "670569765034655774",
-            "emoji_name": "purpleheart"
-        }
-    ]
+  "token": "emi1337",
+  "delay": 15,
+  "statuses": [
+    {
+      "text": "nyarch btw",
+      "emoji_id": "998888851386945566",
+      "emoji_name": "nyarch"
+    },
+    {
+      "text": "sakura",
+      "emoji_id": null,
+      "emoji_name": "🌸"
+    }
+  ],
+  "display_names": []
 }
