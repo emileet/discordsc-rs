@@ -6,7 +6,7 @@ stages:
     - release
 
 build container:
-    image: messense/rust-musl-cross:x86_64-musl
+    image: rust:latest
     stage: build
     before_script:
         - apt update
