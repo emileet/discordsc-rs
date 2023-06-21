@@ -48,7 +48,7 @@ fn main() {
         if config.display_names.len() > 0 {
             request(
                 "https://discord.com/api/v9/users/@me",
-                Some(config.token.clone()),
+                Some(config.token),
                 serde_json::to_string(&PatchName {
                     global_name: config.display_names[name_index].clone(),
                 })

@@ -1,7 +1,7 @@
 pub fn request(url: &str, authorization: Option<String>, data: String) {
     let mut client = reqwest::blocking::Client::new()
         .patch(url)
-        .body(data.clone())
+        .body(data)
         .header(reqwest::header::CONTENT_TYPE, "application/json");
 
     if let Some(token) = authorization {
@@ -9,7 +9,7 @@ pub fn request(url: &str, authorization: Option<String>, data: String) {
             reqwest::header::AUTHORIZATION,
             std::env::var("TOKEN").unwrap_or_else(|_| match token.is_empty() {
                 true => panic!("error: a discord token was not specified!"),
-                false => token.clone(),
+                false => token,
             }),
         );
     }
